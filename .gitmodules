@@ -1,0 +1,3 @@
+[submodule "tpcc-mysql"]
+	path = tpcc-mysql
+	url = https://github.com/XDBLabs/tpcc-mysql.git
