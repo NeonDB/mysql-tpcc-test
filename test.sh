@@ -232,7 +232,7 @@ function prepare() {
     log INFO "=========== prepare begin ============"
 
     for ((i = 0; i < $SCHEMAS; i++)); do
-        dbname=${DBPREFIX}${THREAD}_s$i
+        dbname=${DBPREFIX}${WH}_s$i
 
         log INFO "${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e\"drop database if exists $dbname\""
         ${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e"drop database if exists $dbname" | tee -a $LOGFILE
@@ -254,7 +254,7 @@ function load_multi() {
     log INFO "=========== load_multi begin ============"
 
     for ((schema = 0; schema < $SCHEMAS; schema++)); do
-        dbfullname=${DBPREFIX}${THREAD}_s${schema}
+        dbfullname=${DBPREFIX}${WH}_s${schema}
 
         log INFO "$TPCC_DIR/tpcc_load -h $HOST -d $dbfullname -u $USER -p $PASSWD -w $WH -l 1 -m 1 -n $WH >>$LOGDIR/tpcc_load_${dbfullname}_0.log 2>&1 &"
         $TPCC_DIR/tpcc_load -h $HOST -d $dbfullname -u $USER -p $PASSWD -w $WH -l 1 -m 1 -n $WH >>$LOGDIR/tpcc_load_${dbfullname}_0.log 2>&1 &
@@ -287,7 +287,7 @@ function run() {
     log INFO "=========== run begin ============"
 
     for ((i = 0; i < $SCHEMAS; i++)); do
-        dbfullname=${DBPREFIX}${THREAD}_s$i
+        dbfullname=${DBPREFIX}${WH}_s$i
         log INFO "$TPCC_DIR/tpcc_start -h $HOST -d $dbfullname -u $USER -p $PASSWD -w $WH -c $THREAD -r $WARM_TIME -l $TIME >>$LOGDIR/tpcc_start_${dbfullname}.log 2>&1 &"
         $TPCC_DIR/tpcc_start -h $HOST -d $dbfullname -u $USER -p $PASSWD -w $WH -c $THREAD -r $WARM_TIME -l $TIME >>$LOGDIR/tpcc_start_${dbfullname}.log 2>&1 &
     done
@@ -299,7 +299,7 @@ function cleanup() {
     log INFO "=========== cleanup begin ============"
 
     for ((i = 0; i < $SCHEMAS; i++)); do
-        dbname=${DBPREFIX}${THREAD}_s$i
+        dbname=${DBPREFIX}${WH}_s$i
 
         log INFO "${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e\"drop database if exists $dbname\""
         ${MYSQL_BIN} -u$USER -p$PASSWD -h$HOST -e"drop database if exists $dbname" | tee -a $LOGFILE
@@ -322,13 +322,13 @@ if [ ! -d $LOGDIR ]; then
     mkdir $LOGDIR
 fi
 
-if [ $NEEDRESET ]; then
+if [ "$NEEDRESET" = true ]; then
     log INFO "clear log dir $LOGDIR"
     rm -rf $LOGDIR/*
 fi
 
 LOGFILE=$LOGDIR/tpcc_test.log
-log INFO "user=$USER, passwd=$PASSWD, host=$HOST, port=$PORT, warm-time=${WARM_TIME}, time=$TIME, schemas=$SCHEMAS, threads=$THREAD, logdir=$LOGDIR, needresetlog=$NEEDRESET, cmd=$CMD"
+log INFO "user=$USER, passwd=$PASSWD, host=$HOST, port=$PORT, warehouses=$WH, step=$STEP, warm-time=${WARM_TIME}, time=$TIME, schemas=$SCHEMAS, threads=$THREAD, logdir=$LOGDIR, needresetlog=$NEEDRESET, cmd=$CMD"
 
 if [ $CMD == "prepare" ] || [ $CMD == "all" ]; then
     prepare
