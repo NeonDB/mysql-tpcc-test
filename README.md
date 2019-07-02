@@ -29,7 +29,7 @@ Usage:
 1. if --schemas=2, the script will create databases tpcc${thread-nums}_s0 and tpcc${thread-nums}_1.
 
 
-## 2. Example
+## 2. example
 
 1. prepare: create database and tables, add indexes
 ```bash
@@ -89,3 +89,19 @@ $ ps xf | grep tpcc
 1. `--cmd=all` includes all other commands(prepare, load, run, cleanup).
 2. If want reset log dir, need add `--reset` option.
 3. The default log directory is `/tmp/tpcc_log`, you can specify other directory by `--logdir` option.
+
+## 3. log files
+
+```
+tpcc_load_tpcc16_s0_0.log
+tpcc_load_tpcc16_s0_1.log
+tpcc_load_tpcc16_s0_2.log
+tpcc_load_tpcc16_s0_3.log
+tpcc_load_tpcc16_s1_0.log
+tpcc_load_tpcc16_s1_1.log
+tpcc_load_tpcc16_s1_2.log
+tpcc_load_tpcc16_s1_3.log
+tpcc_start_tpcc16_s0.log
+tpcc_start_tpcc16_s1.log
+tpcc_test.log
+```
